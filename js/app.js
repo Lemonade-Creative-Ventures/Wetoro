@@ -7,49 +7,53 @@
 /* ── Constants ─────────────────────────────────────── */
 
 const TONES = [
-  /* Circles */
+  /* Circles - Mixed */
   { id: 'grief',          label: 'Grief',          shape: 'circle',   color: '#3a5a8c' },
-  { id: 'shame',          label: 'Shame',          shape: 'circle',   color: '#8b2635' },
+  { id: 'happy',          label: 'Happy',          shape: 'circle',   color: '#e8b84d' },
   { id: 'worry',          label: 'Worry',          shape: 'circle',   color: '#b8973a' },
-  { id: 'uncertainty',    label: 'Uncertainty',    shape: 'circle',   color: '#4a8fa8' },
-  /* Squares */
+  { id: 'hopeful',        label: 'Hopeful',        shape: 'circle',   color: '#7ab88f' },
+  /* Squares - Mixed */
   { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' },
-  { id: 'guilt',          label: 'Guilt',          shape: 'square',   color: '#2e6b35' },
+  { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6b9c7a' },
   { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#cc5522' },
-  { id: 'burden',         label: 'Burden',         shape: 'square',   color: '#4d4d4d' },
-  /* Diamonds */
+  { id: 'content',        label: 'Content',        shape: 'square',   color: '#8fb88a' },
+  /* Diamonds - Mixed */
   { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#5575a8' },
+  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#87bcb5' },
   { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#6b6b6b' },
-  { id: 'disappointment', label: 'Disappointment', shape: 'diamond',  color: '#6688aa' },
-  { id: 'despair',        label: 'Despair',        shape: 'diamond',  color: '#2a2a6e' },
-  /* Triangles */
+  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#a5c9b3' },
+  /* Triangles - Mixed */
   { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#c9851a' },
+  { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#f0a650' },
   { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#d4621a' },
-  { id: 'confusion',      label: 'Confusion',      shape: 'triangle', color: '#7a5ab0' },
-  { id: 'resentment',     label: 'Resentment',     shape: 'triangle', color: '#a03030' },
-  /* Stars */
+  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#a0c9af' },
+  /* Stars - Mixed */
   { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#1e7a62' },
+  { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#f5c76d' },
   { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#b84d9a' },
-  { id: 'regret',         label: 'Regret',         shape: 'star',     color: '#8a5c35' },
-  { id: 'tension',        label: 'Tension',        shape: 'star',     color: '#9a7a20' },
-  /* Hexagons */
+  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#d4a5c9' },
+  /* Hexagons - Mixed */
   { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#6b2d8a' },
+  { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#8a9fc9' },
   { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#1e3a60' },
-  { id: 'numbness',       label: 'Numbness',       shape: 'hexagon',  color: '#9e9e9e' },
-  { id: 'emptiness',      label: 'Emptiness',      shape: 'hexagon',  color: '#aaaaaa' },
+  { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#c9a8d4' },
 ];
 
-const STORAGE_KEY = 'the-clearing-release';
+const STORAGE_KEY = 'wetoro-release';
+const LEGACY_STORAGE_KEY = 'the-clearing-release';
 const SVG_NS      = 'http://www.w3.org/2000/svg';
 
 /* ── State ─────────────────────────────────────────── */
 
 const state = {
   selectedTone:    null,
+  stoneLabel:      '',
   breathingActive: false,
   breathTimerId:   null,
   breathPhase:     0,    /* 0=inhale 1=hold 2=exhale */
   breathCycles:    0,
+  currentDate:     todayString(),
+  pastClearings:   {},
 };
 
 /* ── LocalStorage Helpers ───────────────────────────── */
@@ -64,7 +68,19 @@ function todayString() {
 
 function getSavedRelease() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    /* Try new key first */
+    let raw = localStorage.getItem(STORAGE_KEY);
+    
+    /* Migrate from legacy key if needed */
+    if (!raw) {
+      raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (raw) {
+        /* Migrate to new key */
+        localStorage.setItem(STORAGE_KEY, raw);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+    }
+    
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.date !== todayString()) return null;
@@ -74,11 +90,12 @@ function getSavedRelease() {
   }
 }
 
-function saveRelease(tone) {
+function saveRelease(tone, label) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       date: todayString(),
       tone: { id: tone.id, label: tone.label, shape: tone.shape, color: tone.color },
+      label: label || '',
     }));
   } catch (_) { /* ignore storage errors */ }
 }
@@ -294,6 +311,12 @@ function selectTone(tone) {
     btn.setAttribute('aria-checked', active ? 'true' : 'false');
   });
 
+  /* Show label input area */
+  const labelArea = document.getElementById('label-area');
+  if (labelArea) {
+    labelArea.style.display = 'flex';
+  }
+
   updateReleaseButton();
 }
 
@@ -331,13 +354,18 @@ function initRitual() {
   const textarea   = document.getElementById('release-text');
   const charNum    = document.getElementById('char-num');
   const releaseBtn = document.getElementById('btn-release');
+  const labelArea  = document.getElementById('label-area');
+  const labelInput = document.getElementById('stone-label');
 
   if (!textarea) return;
 
   /* Reset */
   textarea.value     = '';
   state.selectedTone = null;
+  state.stoneLabel   = '';
   if (charNum) charNum.textContent = '0';
+  if (labelInput) labelInput.value = '';
+  if (labelArea) labelArea.style.display = 'none';
 
   document.querySelectorAll('.tone-btn').forEach(function (btn) {
     btn.classList.remove('is-selected');
@@ -352,6 +380,12 @@ function initRitual() {
     updateReleaseButton();
   });
 
+  if (labelInput) {
+    labelInput.addEventListener('input', function () {
+      state.stoneLabel = labelInput.value.trim();
+    });
+  }
+
   releaseBtn.addEventListener('click', startRelease, { once: true });
 }
 
@@ -363,7 +397,7 @@ function startRelease() {
 
   /* Save to localStorage before text is lost */
   if (state.selectedTone) {
-    saveRelease(state.selectedTone);
+    saveRelease(state.selectedTone, state.stoneLabel);
   }
 
   /* Seed the dissolving text onto the breathing screen */
@@ -420,17 +454,19 @@ function tickBreath(labelEl, continueBtn) {
       state.breathPhase = 0;
       state.breathCycles++;
 
-      /* After first complete cycle, reveal the continue button */
-      if (state.breathCycles === 1 && continueBtn) {
+      /* After third complete cycle, reveal the continue button */
+      if (state.breathCycles === 3 && continueBtn) {
         continueBtn.style.opacity       = '1';
         continueBtn.style.pointerEvents = 'auto';
         continueBtn.setAttribute('aria-hidden', 'false');
         continueBtn.removeAttribute('tabindex');
-      }
-
-      /* Auto-advance after 3 complete cycles */
-      if (state.breathCycles >= 3) {
-        goToClearing();
+        /* Stop automatic progression - user must click */
+        if (state.breathTimerId) {
+          clearTimeout(state.breathTimerId);
+          state.breathTimerId = null;
+        }
+        const circle = document.getElementById('breath-circle');
+        if (circle) circle.classList.remove('is-breathing');
         return;
       }
     }
@@ -503,28 +539,14 @@ function renderClearing(userJustReleased) {
     svg.appendChild(ring);
   });
 
-  /* ── Seed stones (simulated other users) ── */
-  const rng       = createRng(dateSeed());
-  const baseCount = Math.floor(45 + rng() * 35); /* 45–80 stones */
-
-  for (let i = 0; i < baseCount; i++) {
-    const tone    = TONES[Math.floor(rng() * TONES.length)];
-    const pos     = randomPositionInCircle(rng, cx, cy, 18, clearingR - 14);
-    const radius  = 3 + rng() * 4.5;
-    const opacity = 0.65 + rng() * 0.28;
-    const rot     = rng() * 30 - 15;
-
-    const stone = makeStoneEl(tone.shape, pos.x, pos.y, radius, tone.color, opacity, rot);
-    svg.appendChild(stone);
-  }
-
-  /* ── User stone ── */
+  /* ── Only show actual user stone (no fake stones) ── */
   const saved = getSavedRelease();
-  let totalCount = baseCount;
+  let totalCount = 0;
 
   if (saved && saved.tone) {
-    totalCount = baseCount + 1;
+    totalCount = 1;
     const userTone = saved.tone;
+    const userLabel = saved.label || '';
 
     /* Glow halo (appears/pulses via CSS animation) */
     const haloRadius = 10;
@@ -548,6 +570,17 @@ function renderClearing(userJustReleased) {
     if (userJustReleased) {
       userStone.classList.add('stone--new');
     }
+    
+    /* Add hover functionality if there's a label */
+    if (userLabel) {
+      userStone.setAttribute('data-label', userLabel);
+      userStone.style.cursor = 'pointer';
+      userStone.addEventListener('mouseenter', function(e) {
+        showTooltip(e, userLabel);
+      });
+      userStone.addEventListener('mouseleave', hideTooltip);
+    }
+    
     svg.appendChild(userStone);
 
     /* Update "your stone" row */
@@ -563,13 +596,26 @@ function renderClearing(userJustReleased) {
   const countEl = document.getElementById('clearing-count');
   if (countEl) {
     countEl.textContent =
-      totalCount === 1
+      totalCount === 0
+        ? 'No stones placed yet today'
+        : totalCount === 1
         ? '1 stone placed today'
         : `${totalCount} stones placed today`;
   }
 
   /* ── Legend ── */
   renderLegend();
+  
+  /* ── Show timeline navigation only if there are past releases ── */
+  const timelineNav = document.getElementById('timeline-nav');
+  if (timelineNav) {
+    const hasPastReleases = getStoredReleaseDates().length > 1;
+    if (hasPastReleases) {
+      timelineNav.style.display = 'flex';
+    } else {
+      timelineNav.style.display = 'none';
+    }
+  }
 }
 
 function renderLegend() {
@@ -596,6 +642,232 @@ function showAlreadyReleased(saved) {
 
 /* ── App Init ───────────────────────────────────────── */
 
+/* ── Tooltip for stone labels ──────────────────────── */
+function showTooltip(event, label) {
+  const tooltip = document.getElementById('stone-tooltip');
+  if (!tooltip || !label) return;
+  
+  tooltip.textContent = label;
+  tooltip.style.display = 'block';
+  
+  const svgRect = event.target.ownerSVGElement.getBoundingClientRect();
+  
+  /* Position tooltip near the stone */
+  const x = event.clientX - svgRect.left;
+  const y = event.clientY - svgRect.top;
+  
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = (y - 40) + 'px';
+}
+
+function hideTooltip() {
+  const tooltip = document.getElementById('stone-tooltip');
+  if (tooltip) {
+    tooltip.style.display = 'none';
+  }
+}
+
+/* ── Share functionality ───────────────────────────── */
+function shareClearing() {
+  const shareData = {
+    title: 'Wetoro',
+    text: 'A quiet space to release what you feel — one stone at a time.',
+    url: window.location.href
+  };
+  
+  if (navigator.share) {
+    navigator.share(shareData).catch(function() {
+      /* User cancelled or error - fallback to clipboard */
+      fallbackShare();
+    });
+  } else {
+    fallbackShare();
+  }
+}
+
+function fallbackShare() {
+  const url = window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() {
+      showToastMessage('Link copied to clipboard!');
+    }).catch(function() {
+      showToastMessage('Share: ' + url);
+    });
+  } else {
+    showToastMessage('Share: ' + url);
+  }
+}
+
+function showToastMessage(message) {
+  /* Create temporary toast notification */
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(function() {
+    if (toast.parentNode === document.body) {
+      document.body.removeChild(toast);
+    }
+  }, 3000);
+}
+
+/* ── Timeline navigation ───────────────────────────── */
+function initTimeline() {
+  const toggleBtn = document.getElementById('btn-timeline-toggle');
+  const picker = document.getElementById('timeline-picker');
+  
+  if (!toggleBtn || !picker) return;
+  
+  toggleBtn.addEventListener('click', function() {
+    const isOpen = picker.style.display === 'flex';
+    if (isOpen) {
+      picker.style.display = 'none';
+    } else {
+      picker.style.display = 'flex';
+      renderTimelineDates();
+    }
+  });
+}
+
+function renderTimelineDates() {
+  const picker = document.getElementById('timeline-picker');
+  if (!picker) return;
+  
+  picker.innerHTML = '';
+  
+  /* Get dates that actually have releases stored */
+  const storedDates = getStoredReleaseDates();
+  
+  if (storedDates.length === 0) {
+    const msg = document.createElement('p');
+    msg.textContent = 'No past releases yet';
+    msg.style.cssText = 'color:var(--text-faint);font-size:0.85rem;padding:0.5rem;';
+    picker.appendChild(msg);
+    return;
+  }
+  
+  storedDates.forEach(function(dateStr) {
+    const btn = document.createElement('button');
+    btn.className = 'timeline-date-btn';
+    btn.type = 'button';
+    btn.textContent = formatDateDisplay(dateStr);
+    
+    if (dateStr === state.currentDate) {
+      btn.classList.add('is-active');
+    }
+    
+    btn.addEventListener('click', function() {
+      state.currentDate = dateStr;
+      document.querySelectorAll('.timeline-date-btn').forEach(function(b) {
+        b.classList.remove('is-active');
+      });
+      btn.classList.add('is-active');
+      renderClearingForDate(dateStr);
+    });
+    
+    picker.appendChild(btn);
+  });
+}
+
+function getStoredReleaseDates() {
+  /* Get all dates with stored releases from localStorage */
+  const dates = [];
+  const today = todayString();
+  
+  /* Check if there's a release for today */
+  if (getSavedRelease()) {
+    dates.push(today);
+  }
+  
+  /* In a real implementation with a backend, this would query the database */
+  /* For now, just show today if there's a release */
+  return dates;
+}
+
+function renderClearingForDate(dateStr) {
+  /* This would load clearing data for the specified date */
+  /* For now, only today's data is available in localStorage */
+  if (dateStr === todayString()) {
+    renderClearing(false);
+  } else {
+    /* Show empty clearing for past dates (no data stored) */
+    const svg = document.getElementById('clearing-svg');
+    if (!svg) return;
+    
+    /* Clear and show ground only */
+    Array.from(svg.childNodes).forEach(function (node) {
+      if (node.nodeName !== 'defs') svg.removeChild(node);
+    });
+    
+    const cx = 250, cy = 250;
+    const clearingR = 218;
+    
+    function addCircle(r, fill, opacity) {
+      const el = document.createElementNS(SVG_NS, 'circle');
+      el.setAttribute('cx', cx);
+      el.setAttribute('cy', cy);
+      el.setAttribute('r', r);
+      el.setAttribute('fill', fill);
+      if (opacity !== undefined) el.setAttribute('opacity', opacity);
+      svg.appendChild(el);
+    }
+    
+    addCircle(248, '#0d1a09');
+    addCircle(clearingR, '#1a2b16');
+    addCircle(180, 'url(#groundGlow)');
+    
+    const countEl = document.getElementById('clearing-count');
+    if (countEl) {
+      countEl.textContent = 'No data for this date';
+    }
+  }
+}
+
+function dateToString(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatDateDisplay(dateStr) {
+  const today = todayString();
+  if (dateStr === today) return 'Today';
+  
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (dateStr === dateToString(yesterday)) return 'Yesterday';
+  
+  const parts = dateStr.split('-');
+  const date = new Date(parts[0], parts[1] - 1, parts[2]);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+/* ── Landing animation ─────────────────────────────── */
+function animateLandingStory() {
+  const storyElements = document.querySelectorAll('.story-fade');
+  const enterButton = document.getElementById('btn-enter');
+  
+  if (storyElements.length === 0) return;
+  
+  let delay = 800;
+  storyElements.forEach(function(el, index) {
+    setTimeout(function() {
+      el.style.opacity = '1';
+    }, delay);
+    delay += 1200;
+  });
+  
+  /* Show button after all story elements */
+  if (enterButton) {
+    setTimeout(function() {
+      enterButton.style.opacity = '1';
+      enterButton.style.transition = 'opacity 600ms ease-in';
+    }, delay + 400);
+  }
+}
+
 function init() {
   /* Render tone grid once */
   renderToneGrid();
@@ -605,6 +877,9 @@ function init() {
 
   if (saved) {
     showAlreadyReleased(saved);
+  } else {
+    /* Animate landing story on first visit */
+    animateLandingStory();
   }
   /* Otherwise, landing screen is already visible (is-active default) */
 
@@ -626,6 +901,15 @@ function init() {
   document.getElementById('btn-to-clearing').addEventListener('click', function () {
     goToClearing();
   });
+  
+  /* Share button */
+  const shareBtn = document.getElementById('btn-share-clearing');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', shareClearing);
+  }
+  
+  /* Timeline navigation */
+  initTimeline();
 }
 
 /* ── Bootstrap ──────────────────────────────────────── */
