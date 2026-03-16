@@ -39,7 +39,7 @@ const TONES = [
   { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#c9a8d4' },
 ];
 
-const STORAGE_KEY = 'the-clearing-release';
+const STORAGE_KEY = 'wetoro-release';
 const SVG_NS      = 'http://www.w3.org/2000/svg';
 
 /* ── State ─────────────────────────────────────────── */
@@ -673,18 +673,25 @@ function fallbackShare() {
   const url = window.location.href;
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).then(function() {
-      alert('Link copied to clipboard!');
+      showToastMessage('Link copied to clipboard!');
     }).catch(function() {
-      promptShareUrl(url);
+      showToastMessage('Share: ' + url);
     });
   } else {
-    promptShareUrl(url);
+    showToastMessage('Share: ' + url);
   }
 }
 
-function promptShareUrl(url) {
-  /* Fallback: show the URL */
-  prompt('Share this URL:', url);
+function showToastMessage(message) {
+  /* Create temporary toast notification */
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0f08;padding:12px 24px;border-radius:6px;font-size:0.9rem;z-index:1000;animation:fadeInOut 3s ease-in-out;';
+  document.body.appendChild(toast);
+  
+  setTimeout(function() {
+    document.body.removeChild(toast);
+  }, 3000);
 }
 
 /* ── Timeline navigation ───────────────────────────── */
@@ -711,17 +718,18 @@ function renderTimelineDates() {
   
   picker.innerHTML = '';
   
-  /* For now, just show last 7 days as an example */
-  /* In a real implementation, this would query actual stored dates */
-  const dates = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const dateStr = dateToString(d);
-    dates.push(dateStr);
+  /* Get dates that actually have releases stored */
+  const storedDates = getStoredReleaseDates();
+  
+  if (storedDates.length === 0) {
+    const msg = document.createElement('p');
+    msg.textContent = 'No past releases yet';
+    msg.style.cssText = 'color:var(--text-faint);font-size:0.85rem;padding:0.5rem;';
+    picker.appendChild(msg);
+    return;
   }
   
-  dates.forEach(function(dateStr) {
+  storedDates.forEach(function(dateStr) {
     const btn = document.createElement('button');
     btn.className = 'timeline-date-btn';
     btn.type = 'button';
@@ -737,13 +745,65 @@ function renderTimelineDates() {
         b.classList.remove('is-active');
       });
       btn.classList.add('is-active');
-      /* In real implementation, would load that date's clearing */
-      /* For now, just re-render current */
-      renderClearing(false);
+      renderClearingForDate(dateStr);
     });
     
     picker.appendChild(btn);
   });
+}
+
+function getStoredReleaseDates() {
+  /* Get all dates with stored releases from localStorage */
+  const dates = [];
+  const today = todayString();
+  
+  /* Check if there's a release for today */
+  if (getSavedRelease()) {
+    dates.push(today);
+  }
+  
+  /* In a real implementation with a backend, this would query the database */
+  /* For now, just show today if there's a release */
+  return dates;
+}
+
+function renderClearingForDate(dateStr) {
+  /* This would load clearing data for the specified date */
+  /* For now, only today's data is available in localStorage */
+  if (dateStr === todayString()) {
+    renderClearing(false);
+  } else {
+    /* Show empty clearing for past dates (no data stored) */
+    const svg = document.getElementById('clearing-svg');
+    if (!svg) return;
+    
+    /* Clear and show ground only */
+    Array.from(svg.childNodes).forEach(function (node) {
+      if (node.nodeName !== 'defs') svg.removeChild(node);
+    });
+    
+    const cx = 250, cy = 250;
+    const clearingR = 218;
+    
+    function addCircle(r, fill, opacity) {
+      const el = document.createElementNS(SVG_NS, 'circle');
+      el.setAttribute('cx', cx);
+      el.setAttribute('cy', cy);
+      el.setAttribute('r', r);
+      el.setAttribute('fill', fill);
+      if (opacity !== undefined) el.setAttribute('opacity', opacity);
+      svg.appendChild(el);
+    }
+    
+    addCircle(248, '#0d1a09');
+    addCircle(clearingR, '#1a2b16');
+    addCircle(180, 'url(#groundGlow)');
+    
+    const countEl = document.getElementById('clearing-count');
+    if (countEl) {
+      countEl.textContent = 'No data for this date';
+    }
+  }
 }
 
 function dateToString(date) {
