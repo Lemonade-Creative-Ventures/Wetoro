@@ -870,6 +870,16 @@ h2 {
   z-index: 1000;
   animation: fadeInOut 3s ease-in-out;
   pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+
+@media (max-height: 500px) {
+  .toast-notification {
+    bottom: 10px;
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

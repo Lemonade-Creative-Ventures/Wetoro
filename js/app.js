@@ -650,8 +650,6 @@ function showTooltip(event, label) {
   tooltip.textContent = label;
   tooltip.style.display = 'block';
   
-  const stage = document.querySelector('.clearing-stage');
-  const stageRect = stage.getBoundingClientRect();
   const svgRect = event.target.ownerSVGElement.getBoundingClientRect();
   
   /* Position tooltip near the stone */
@@ -708,7 +706,9 @@ function showToastMessage(message) {
   document.body.appendChild(toast);
   
   setTimeout(function() {
-    document.body.removeChild(toast);
+    if (toast.parentNode === document.body) {
+      document.body.removeChild(toast);
+    }
   }, 3000);
 }
 
