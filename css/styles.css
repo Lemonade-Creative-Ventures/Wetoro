@@ -170,6 +170,10 @@ h2 {
   line-height: 1.8;
 }
 
+.story-fade {
+  transition: opacity 800ms ease-in;
+}
+
 .story-lead {
   font-family: var(--font-display);
   font-style: italic;
@@ -447,6 +451,43 @@ h2 {
   letter-spacing: 0.02em;
 }
 
+/* Label input area */
+.label-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label-heading {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.label-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+  transition: border-color 200ms;
+}
+
+.label-input::placeholder {
+  color: var(--text-faint);
+}
+
+.label-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 /* ── 10. Breathing Screen ───────────────────────────── */
 .dissolving-words {
   font-family: var(--font-display);
@@ -525,6 +566,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  position: relative;
 }
 
 .clearing-count {
@@ -533,16 +575,135 @@ h2 {
   color: var(--text-muted);
 }
 
+.btn-share {
+  position: absolute;
+  top: 1.5rem;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color 200ms, border-color 200ms, background 200ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-share:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.btn-share:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .clearing-stage {
   width: 100%;
   max-width: 480px;
   align-self: center;
+  position: relative;
 }
 
 .clearing-stage svg {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.stone-tooltip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  color: var(--text);
+  font-size: 0.8rem;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 200px;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-timeline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color 200ms, border-color 200ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-timeline-toggle:hover {
+  color: var(--text-muted);
+  border-color: var(--accent);
+}
+
+.btn-timeline-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.timeline-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 180px;
+}
+
+.timeline-date-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: background 180ms, color 180ms;
+}
+
+.timeline-date-btn:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.timeline-date-btn.is-active {
+  background: var(--accent-dim);
+  color: var(--accent);
 }
 
 .clearing-footer {
