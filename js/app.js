@@ -40,6 +40,7 @@ const TONES = [
 ];
 
 const STORAGE_KEY = 'wetoro-release';
+const LEGACY_STORAGE_KEY = 'the-clearing-release';
 const SVG_NS      = 'http://www.w3.org/2000/svg';
 
 /* ── State ─────────────────────────────────────────── */
@@ -67,7 +68,19 @@ function todayString() {
 
 function getSavedRelease() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    /* Try new key first */
+    let raw = localStorage.getItem(STORAGE_KEY);
+    
+    /* Migrate from legacy key if needed */
+    if (!raw) {
+      raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (raw) {
+        /* Migrate to new key */
+        localStorage.setItem(STORAGE_KEY, raw);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+    }
+    
     if (!raw) return null;
     const data = JSON.parse(raw);
     if (data.date !== todayString()) return null;
@@ -593,10 +606,15 @@ function renderClearing(userJustReleased) {
   /* ── Legend ── */
   renderLegend();
   
-  /* ── Show timeline navigation ── */
+  /* ── Show timeline navigation only if there are past releases ── */
   const timelineNav = document.getElementById('timeline-nav');
-  if (timelineNav && saved) {
-    timelineNav.style.display = 'flex';
+  if (timelineNav) {
+    const hasPastReleases = getStoredReleaseDates().length > 1;
+    if (hasPastReleases) {
+      timelineNav.style.display = 'flex';
+    } else {
+      timelineNav.style.display = 'none';
+    }
   }
 }
 
@@ -685,8 +703,8 @@ function fallbackShare() {
 function showToastMessage(message) {
   /* Create temporary toast notification */
   const toast = document.createElement('div');
+  toast.className = 'toast-notification';
   toast.textContent = message;
-  toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0f08;padding:12px 24px;border-radius:6px;font-size:0.9rem;z-index:1000;animation:fadeInOut 3s ease-in-out;';
   document.body.appendChild(toast);
   
   setTimeout(function() {
