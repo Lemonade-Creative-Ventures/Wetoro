@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Clearing — A quiet digital ritual to release what you carry. Anonymous, calm, and shared." />
+  <meta name="keywords" content="mindfulness, ritual, letting go, emotional release, meditation, toro nagashi" />
+  <meta property="og:title" content="The Clearing — A Quiet Ritual" />
+  <meta property="og:description" content="Write what you are carrying. Let it dissolve. Leave a stone." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#080f06" />
+  <title>The Clearing — A Quiet Ritual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <main id="app" role="main">
+
+    <!-- ─── Screen: Landing ─────────────────────────────────────── -->
+    <section
+      id="screen-landing"
+      class="screen is-active"
+      aria-label="Welcome to The Clearing"
+    >
+      <div class="screen-inner">
+
+        <header class="landing-header">
+          <div class="emblem" aria-hidden="true">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <circle cx="28" cy="28" r="26" stroke="#8fa87d" stroke-width="1.5" opacity="0.5" />
+              <circle cx="28" cy="28" r="7" fill="#8fa87d" opacity="0.88" />
+            </svg>
+          </div>
+          <h1>The Clearing</h1>
+        </header>
+
+        <div class="story">
+          <p class="story-lead">For centuries, people have practised quiet rituals to release what they carry.</p>
+          <p>In Japan, a ceremony called <em>Toro Nagashi</em> sends lanterns onto rivers. Each lantern holds a memory, a burden, a prayer. As it drifts away, people symbolically let something go.</p>
+          <p>Sometimes what we carry is hard to share — not the right moment, or we simply need a place to release it without advice or response.</p>
+          <p class="story-close">The Clearing is a modern ritual for that same purpose.</p>
+        </div>
+
+        <ul class="landing-qualities" aria-label="What this space offers">
+          <li>Anonymous</li>
+          <li>One release per day</li>
+          <li>No accounts</li>
+        </ul>
+
+        <button id="btn-enter" class="btn btn--primary" type="button">
+          Enter the Clearing
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ─── Screen: Already Released Today ──────────────────────── -->
+    <section
+      id="screen-already"
+      class="screen"
+      aria-label="Already released today"
+      aria-hidden="true"
+    >
+      <div class="screen-inner screen-inner--centered">
+        <div class="already-emblem" aria-hidden="true" id="already-stone-icon"></div>
+        <h2>You have already released today.</h2>
+        <p class="subdued">Your stone rests in the clearing.<br />Return tomorrow to release again.</p>
+        <button id="btn-view-clearing" class="btn btn--secondary" type="button">
+          View the Clearing
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── Screen: Ritual (Write + Tone) ───────────────────────── -->
+    <section
+      id="screen-ritual"
+      class="screen"
+      aria-label="Write your release"
+      aria-hidden="true"
+    >
+      <div class="screen-inner">
+
+        <h2 class="prompt-text">What are you carrying tonight?</h2>
+
+        <div class="write-area">
+          <label for="release-text" class="sr-only">Write what you are carrying</label>
+          <textarea
+            id="release-text"
+            class="write-textarea"
+            placeholder="Write freely. These words are yours alone — they will dissolve when released."
+            maxlength="1000"
+            rows="6"
+            aria-describedby="char-info"
+          ></textarea>
+          <p id="char-info" class="char-count" aria-live="polite">
+            <span id="char-num">0</span>&thinsp;/&thinsp;1000
+          </p>
+        </div>
+
+        <div class="tone-area">
+          <p class="tone-heading" id="tone-heading-label">What does it feel like?</p>
+          <div
+            id="tone-grid"
+            class="tone-grid"
+            role="radiogroup"
+            aria-labelledby="tone-heading-label"
+          >
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="release-area">
+          <button
+            id="btn-release"
+            class="btn btn--release"
+            type="button"
+            disabled
+            aria-disabled="true"
+          >
+            Release
+          </button>
+          <p class="release-hint" id="release-hint" aria-live="polite">
+            Write something and choose a tone to continue.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Screen: Breathing ────────────────────────────────────── -->
+    <section
+      id="screen-breathing"
+      class="screen"
+      aria-label="Breathing ritual"
+      aria-hidden="true"
+    >
+      <div class="screen-inner screen-inner--centered">
+
+        <p class="dissolving-words" id="dissolving-words" aria-hidden="true"></p>
+
+        <div class="breath-wrap" aria-hidden="true">
+          <div class="breath-circle" id="breath-circle"></div>
+        </div>
+
+        <p
+          class="breath-label"
+          id="breath-label"
+          aria-live="polite"
+          aria-atomic="true"
+        >Inhale</p>
+        <p class="breath-sub">let it go with your breath</p>
+
+        <button
+          id="btn-to-clearing"
+          class="btn btn--ghost"
+          type="button"
+          aria-hidden="true"
+          tabindex="-1"
+          style="opacity:0; pointer-events:none;"
+        >
+          Continue to the Clearing
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ─── Screen: The Clearing ─────────────────────────────────── -->
+    <section
+      id="screen-clearing"
+      class="screen"
+      aria-label="The shared clearing"
+      aria-hidden="true"
+    >
+      <div class="screen-inner">
+
+        <header class="clearing-header">
+          <h2>The Clearing</h2>
+          <p class="clearing-count" id="clearing-count"></p>
+        </header>
+
+        <div
+          class="clearing-stage"
+          role="img"
+          aria-label="A circular clearing with stones representing today's releases"
+        >
+          <svg
+            id="clearing-svg"
+            viewBox="0 0 500 500"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <defs>
+              <radialGradient id="groundGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"   stop-color="#4a7a38" stop-opacity="0.22" />
+                <stop offset="100%" stop-color="#1a2b16" stop-opacity="0"    />
+              </radialGradient>
+            </defs>
+            <!-- Rendered by JS -->
+          </svg>
+        </div>
+
+        <footer class="clearing-footer">
+          <p class="clearing-tagline">Each stone is someone letting something go.</p>
+
+          <div id="your-stone-row" class="your-stone-row" style="display:none" aria-live="polite">
+            <span id="your-stone-icon" aria-hidden="true"></span>
+            <span>Your stone is in the clearing.</span>
+          </div>
+
+          <details class="legend-toggle">
+            <summary>What do the shapes mean?</summary>
+            <div id="tone-legend" class="tone-legend" role="list">
+              <!-- Populated by JS -->
+            </div>
+          </details>
+
+          <p class="return-note">Return tomorrow to release again.</p>
+        </footer>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
