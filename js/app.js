@@ -847,24 +847,66 @@ function formatDateDisplay(dateStr) {
 /* ── Landing animation ─────────────────────────────── */
 function animateLandingStory() {
   const storyElements = document.querySelectorAll('.story-fade');
-  const enterButton = document.getElementById('btn-enter');
-  
+  const enterButton   = document.getElementById('btn-enter');
+  const spotlight     = document.getElementById('story-spotlight');
+  const spotlightText = document.getElementById('story-spotlight-text');
+  const qualities     = document.querySelector('.landing-qualities');
+
   if (storyElements.length === 0) return;
-  
-  let delay = 800;
+
+  /* Respect reduced-motion preference — reveal everything immediately */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    storyElements.forEach(function(el) { el.style.opacity = '1'; });
+    if (qualities) { qualities.style.opacity = '1'; }
+    if (enterButton) {
+      enterButton.style.opacity = '1';
+      enterButton.style.transition = 'none';
+    }
+    return;
+  }
+
+  const FADE_MS    = 1200;  /* spotlight fade-in / fade-out duration (ms)  */
+  const HOLD_MS    = 2200;  /* time each section is fully visible (ms)      */
+  const GAP_MS     = 400;   /* pause between sections before next starts   */
+  const SECTION_MS = FADE_MS + HOLD_MS + FADE_MS + GAP_MS; /* ≈ 5000 ms   */
+  const INITIAL_MS = 1000;  /* delay before the first section appears      */
+
+  /* Phase 1 — flash each section one at a time through the spotlight */
   storyElements.forEach(function(el, index) {
+    const sectionStart = INITIAL_MS + (index * SECTION_MS);
+
+    /* Fade spotlight in with this section's text */
     setTimeout(function() {
-      el.style.opacity = '1';
-    }, delay);
-    delay += 1200;
+      spotlightText.innerHTML = el.innerHTML;
+      spotlight.setAttribute('aria-hidden', 'false');
+      spotlight.style.opacity = '1';
+    }, sectionStart);
+
+    /* Fade spotlight out after the hold period */
+    setTimeout(function() {
+      spotlight.style.opacity = '0';
+      spotlight.setAttribute('aria-hidden', 'true');
+    }, sectionStart + FADE_MS + HOLD_MS);
   });
-  
-  /* Show button after all story elements */
+
+  /* Phase 2 — reveal the full story block once all sections have flashed */
+  const revealStart = INITIAL_MS + (storyElements.length * SECTION_MS) + 600;
+
+  setTimeout(function() {
+    storyElements.forEach(function(el) {
+      el.style.opacity = '1';
+    });
+    if (qualities) {
+      qualities.style.opacity = '1';
+    }
+  }, revealStart);
+
+  /* Phase 3 — show the enter button after the story block has settled */
   if (enterButton) {
     setTimeout(function() {
       enterButton.style.opacity = '1';
-      enterButton.style.transition = 'opacity 600ms ease-in';
-    }, delay + 400);
+      enterButton.style.transition = 'opacity 800ms ease-in';
+    }, revealStart + 1400);
   }
 }
 

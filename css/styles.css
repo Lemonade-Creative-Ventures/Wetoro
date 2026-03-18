@@ -161,6 +161,36 @@ h2 {
   display: block;
 }
 
+/* Spotlight overlay — shows one section at a time, large & centred */
+.story-spotlight {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2rem;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1200ms ease;
+}
+
+.story-spotlight-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5.5vw, 2.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.55;
+  max-width: 580px;
+}
+
+.story-spotlight-text em {
+  color: var(--accent-light);
+  font-style: normal;
+}
+
 .story {
   display: flex;
   flex-direction: column;
@@ -171,7 +201,7 @@ h2 {
 }
 
 .story-fade {
-  transition: opacity 800ms ease-in;
+  transition: opacity 1200ms ease-in;
 }
 
 .story-lead {
@@ -198,6 +228,7 @@ h2 {
   flex-wrap: wrap;
   gap: 0.4rem 1.5rem;
   justify-content: center;
+  transition: opacity 1200ms ease-in;
 }
 
 .landing-qualities li {
@@ -894,7 +925,10 @@ h2 {
   .screen.is-active,
   .screen.is-exiting,
   .btn,
-  .tone-btn {
+  .tone-btn,
+  .story-spotlight,
+  .story-fade,
+  .landing-qualities {
     transition: none;
   }
 }
