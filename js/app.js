@@ -35,7 +35,7 @@ const TONES = [
   /* Hexagons - same 4 colors */
   { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#7a7a7a' }, /* gray (special) */
   { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#4a7ac9' }, /* blue */
-  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#4a7ac9' }, /* blue */
+  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#d97f9a' }, /* pink */
   { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#e8b84d' }, /* gold */
 ];
 
