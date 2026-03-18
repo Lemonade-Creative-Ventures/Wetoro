@@ -864,7 +864,7 @@ function animateLandingStory() {
   }
 
   const FADE_MS    = 1200;  /* spotlight fade-in / fade-out duration (ms)  */
-  const HOLD_MS    = 2600;  /* time each section is fully visible (ms) — increased for slower readers */
+  const HOLD_MS    = 2600;  /* time shorter sections are fully visible (ms) */
   const HOLD_MS_LONG = 3400; /* extended hold for longer paragraphs (2, 4) */
   const GAP_MS     = 400;   /* pause between sections before next starts   */
   const INITIAL_MS = 1000;  /* delay before the first section appears      */
