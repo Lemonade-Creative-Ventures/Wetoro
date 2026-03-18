@@ -355,6 +355,84 @@ h2 {
   text-align: right;
 }
 
+/* Textarea wrapper for voice input button */
+.textarea-wrapper {
+  position: relative;
+}
+
+.voice-input-btn {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  background: var(--ground);
+  color: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 200ms, color 200ms, transform 100ms;
+  z-index: 1;
+}
+
+.voice-input-btn:hover {
+  background: var(--accent-dim);
+  color: var(--accent-light);
+}
+
+.voice-input-btn:active {
+  transform: scale(0.95);
+}
+
+.voice-input-btn.is-listening {
+  background: var(--accent);
+  color: var(--bg);
+  animation: pulse-voice 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-voice {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.05); }
+}
+
+/* Skip vignette checkbox */
+.skip-vignette {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  transition: opacity 600ms ease-in 1400ms;
+}
+
+.skip-vignette-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  transition: background 200ms;
+}
+
+.skip-vignette-label:hover {
+  background: var(--accent-dim);
+}
+
+.skip-vignette-checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.skip-vignette-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
 /* Tone grid */
 .tone-area {
   display: flex;
@@ -621,12 +699,54 @@ h2 {
   max-width: 480px;
   align-self: center;
   position: relative;
+  touch-action: none; /* Enable custom touch handling for zoom/pan */
+  cursor: grab;
+}
+
+.clearing-stage.is-zooming {
+  cursor: grabbing;
 }
 
 .clearing-stage svg {
   display: block;
   width: 100%;
   height: auto;
+  transition: transform 200ms ease-out;
+  transform-origin: center center;
+}
+
+/* Mobile stone tap tooltip */
+.stone-tap-label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-0.5rem);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.875rem;
+  color: var(--text);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInLabel 200ms ease-out forwards;
+}
+
+@keyframes fadeInLabel {
+  from { opacity: 0; transform: translateX(-50%) translateY(-0.25rem); }
+  to { opacity: 1; transform: translateX(-50%) translateY(-0.5rem); }
+}
+
+.stone-tap-label::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 0.375rem solid transparent;
+  border-top-color: var(--accent);
 }
 
 .stone-tooltip {

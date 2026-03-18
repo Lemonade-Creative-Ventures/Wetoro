@@ -58,6 +58,13 @@
           Enter the Clearing
         </button>
 
+        <div class="skip-vignette" style="opacity:0;">
+          <label class="skip-vignette-label">
+            <input type="checkbox" id="skip-vignette-checkbox" class="skip-vignette-checkbox">
+            <span class="skip-vignette-text">Skip the opening vignette next time</span>
+          </label>
+        </div>
+
       </div>
     </section>
 
@@ -91,14 +98,29 @@
 
         <div class="write-area">
           <label for="release-text" class="sr-only">Write what you are feeling</label>
-          <textarea
-            id="release-text"
-            class="write-textarea"
-            placeholder="Write freely. This is an opportunity to talk about anything you've been holding onto, for better or worse. Your words are private and will dissolve when released — nothing is stored."
-            maxlength="1000"
-            rows="6"
-            aria-describedby="char-info"
-          ></textarea>
+          <div class="textarea-wrapper">
+            <textarea
+              id="release-text"
+              class="write-textarea"
+              placeholder="Write freely. This is an opportunity to talk about anything you've been holding onto, for better or worse. Your words are private and will dissolve when released — nothing is stored."
+              maxlength="1000"
+              rows="6"
+              aria-describedby="char-info"
+            ></textarea>
+            <button
+              id="voice-input-btn"
+              class="voice-input-btn"
+              type="button"
+              aria-label="Voice input"
+              title="Speak to write"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" x2="12" y1="19" y2="22"></line>
+              </svg>
+            </button>
+          </div>
           <p id="char-info" class="char-count" aria-live="polite">
             <span id="char-num">0</span>&thinsp;/&thinsp;1000
           </p>
