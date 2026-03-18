@@ -7,40 +7,41 @@
 /* ── Constants ─────────────────────────────────────── */
 
 const TONES = [
-  /* Circles - Mixed */
-  { id: 'grief',          label: 'Grief',          shape: 'circle',   color: '#3a5a8c' },
-  { id: 'happy',          label: 'Happy',          shape: 'circle',   color: '#e8b84d' },
-  { id: 'worry',          label: 'Worry',          shape: 'circle',   color: '#b8973a' },
-  { id: 'hopeful',        label: 'Hopeful',        shape: 'circle',   color: '#7ab88f' },
-  /* Squares - Mixed */
-  { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' },
-  { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6b9c7a' },
-  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#cc5522' },
-  { id: 'content',        label: 'Content',        shape: 'square',   color: '#8fb88a' },
-  /* Diamonds - Mixed */
-  { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#5575a8' },
-  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#87bcb5' },
-  { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#6b6b6b' },
-  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#a5c9b3' },
-  /* Triangles - Mixed */
-  { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#c9851a' },
-  { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#f0a650' },
-  { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#d4621a' },
-  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#a0c9af' },
-  /* Stars - Mixed */
-  { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#1e7a62' },
-  { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#f5c76d' },
-  { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#b84d9a' },
-  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#d4a5c9' },
-  /* Hexagons - Mixed */
-  { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#6b2d8a' },
-  { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#8a9fc9' },
-  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#1e3a60' },
-  { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#c9a8d4' },
+  /* Circles - 4 distinct colors cycle */
+  { id: 'grief',          label: 'Grief',          shape: 'circle',   color: '#4a7ac9' }, /* blue */
+  { id: 'happy',          label: 'Happy',          shape: 'circle',   color: '#e8b84d' }, /* gold */
+  { id: 'worry',          label: 'Worry',          shape: 'circle',   color: '#6dd4a5' }, /* green */
+  { id: 'hopeful',        label: 'Hopeful',        shape: 'circle',   color: '#d97f9a' }, /* pink */
+  /* Squares - same 4 colors */
+  { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' }, /* red (special) */
+  { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6dd4a5' }, /* green */
+  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#d97f9a' }, /* pink */
+  { id: 'content',        label: 'Content',        shape: 'square',   color: '#4a7ac9' }, /* blue */
+  /* Diamonds - same 4 colors */
+  { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#4a7ac9' }, /* blue */
+  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#6dd4a5' }, /* green */
+  { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#7a7a7a' }, /* gray (special) */
+  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#e8b84d' }, /* gold */
+  /* Triangles - same 4 colors */
+  { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#d97f9a' }, /* pink */
+  { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#e8b84d' }, /* gold */
+  { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#c0392b' }, /* red (special) */
+  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#6dd4a5' }, /* green */
+  /* Stars - same 4 colors */
+  { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#4a7ac9' }, /* blue */
+  { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#e8b84d' }, /* gold */
+  { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#d97f9a' }, /* pink */
+  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#6dd4a5' }, /* green */
+  /* Hexagons - same 4 colors */
+  { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#7a7a7a' }, /* gray (special) */
+  { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#4a7ac9' }, /* blue */
+  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#d97f9a' }, /* pink */
+  { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#e8b84d' }, /* gold */
 ];
 
 const STORAGE_KEY = 'wetoro-release';
 const LEGACY_STORAGE_KEY = 'the-clearing-release';
+const SKIP_VIGNETTE_KEY = 'wetoro-skip-vignette';
 const SVG_NS      = 'http://www.w3.org/2000/svg';
 
 /* ── State ─────────────────────────────────────────── */
@@ -571,14 +572,21 @@ function renderClearing(userJustReleased) {
       userStone.classList.add('stone--new');
     }
     
-    /* Add hover functionality if there's a label */
+    /* Add hover functionality and mobile tap label if there's a label */
     if (userLabel) {
       userStone.setAttribute('data-label', userLabel);
+      userStone.setAttribute('data-stone-label', userLabel);
       userStone.style.cursor = 'pointer';
       userStone.addEventListener('mouseenter', function(e) {
         showTooltip(e, userLabel);
       });
       userStone.addEventListener('mouseleave', hideTooltip);
+    } else {
+      /* Even without custom label, add tone name for mobile tap */
+      const toneName = userTone.label || '';
+      if (toneName) {
+        userStone.setAttribute('data-stone-label', toneName);
+      }
     }
     
     svg.appendChild(userStone);
@@ -847,25 +855,339 @@ function formatDateDisplay(dateStr) {
 /* ── Landing animation ─────────────────────────────── */
 function animateLandingStory() {
   const storyElements = document.querySelectorAll('.story-fade');
-  const enterButton = document.getElementById('btn-enter');
-  
+  const enterButton   = document.getElementById('btn-enter');
+  const spotlight     = document.getElementById('story-spotlight');
+  const spotlightText = document.getElementById('story-spotlight-text');
+  const skipVignetteContainer = document.querySelector('.skip-vignette');
+
   if (storyElements.length === 0) return;
+
+  /* Check if user wants to skip vignette */
+  const skipVignette = localStorage.getItem(SKIP_VIGNETTE_KEY) === 'true';
+
+  /* Skip animation if user preference or reduced-motion */
+  if (skipVignette || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    storyElements.forEach(function(el) { el.style.opacity = '1'; });
+    if (enterButton) {
+      enterButton.style.opacity = '1';
+      enterButton.style.transition = 'none';
+    }
+    if (skipVignetteContainer) {
+      skipVignetteContainer.style.opacity = '1';
+      skipVignetteContainer.style.transition = 'none';
+    }
+    return;
+  }
+
+  const FADE_MS    = 1200;  /* spotlight fade-in / fade-out duration (ms)  */
+  const HOLD_MS    = 2600;  /* time shorter sections are fully visible (ms) */
+  const HOLD_MS_PARA2 = 5500; /* extended hold for paragraph 2 (longest) */
+  const HOLD_MS_PARA4 = 4500; /* extended hold for paragraph 4 */
+  const GAP_MS     = 400;   /* pause between sections before next starts   */
+  const INITIAL_MS = 1000;  /* delay before the first section appears      */
+
+  /* Phase 1 — flash each section one at a time through the spotlight */
+  let cumulativeDelay = INITIAL_MS;
   
-  let delay = 800;
   storyElements.forEach(function(el, index) {
+    /* Different hold durations for different paragraph lengths */
+    let holdDuration = HOLD_MS;
+    if (index === 1) holdDuration = HOLD_MS_PARA2; /* paragraph 2 - longest */
+    else if (index === 3) holdDuration = HOLD_MS_PARA4; /* paragraph 4 - long */
+    const sectionDuration = FADE_MS + holdDuration + FADE_MS + GAP_MS;
+
+    /* Fade spotlight in with this section's text */
     setTimeout(function() {
-      el.style.opacity = '1';
-    }, delay);
-    delay += 1200;
+      spotlightText.innerHTML = el.innerHTML;
+      spotlight.setAttribute('aria-hidden', 'false');
+      spotlight.style.opacity = '1';
+    }, cumulativeDelay);
+
+    /* Fade spotlight out after the hold period */
+    setTimeout(function() {
+      spotlight.style.opacity = '0';
+      spotlight.setAttribute('aria-hidden', 'true');
+    }, cumulativeDelay + FADE_MS + holdDuration);
+
+    cumulativeDelay += sectionDuration;
   });
-  
-  /* Show button after all story elements */
+
+  /* Phase 2 — reveal the full story block once all sections have flashed */
+  const revealStart = cumulativeDelay + 600;
+
+  setTimeout(function() {
+    storyElements.forEach(function(el) {
+      el.style.opacity = '1';
+    });
+  }, revealStart);
+
+  /* Phase 3 — show the enter button and skip checkbox after the story block has settled */
   if (enterButton) {
     setTimeout(function() {
       enterButton.style.opacity = '1';
-      enterButton.style.transition = 'opacity 600ms ease-in';
-    }, delay + 400);
+      enterButton.style.transition = 'opacity 800ms ease-in';
+    }, revealStart + 1400);
   }
+  
+  if (skipVignetteContainer) {
+    setTimeout(function() {
+      skipVignetteContainer.style.opacity = '1';
+    }, revealStart + 1400);
+  }
+}
+
+/* ── Voice Input ───────────────────────────────────── */
+function initVoiceInput() {
+  const voiceBtn = document.getElementById('voice-input-btn');
+  const textarea = document.getElementById('release-text');
+  
+  if (!voiceBtn || !textarea) return;
+  
+  /* Check for Web Speech API support */
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  
+  if (!SpeechRecognition) {
+    voiceBtn.style.display = 'none';
+    return;
+  }
+  
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+  
+  let isListening = false;
+  let finalTranscript = '';
+  
+  recognition.onstart = function() {
+    isListening = true;
+    voiceBtn.classList.add('is-listening');
+    voiceBtn.setAttribute('aria-label', 'Stop listening');
+  };
+  
+  recognition.onend = function() {
+    isListening = false;
+    voiceBtn.classList.remove('is-listening');
+    voiceBtn.setAttribute('aria-label', 'Voice input');
+  };
+  
+  recognition.onresult = function(event) {
+    let interimTranscript = '';
+    
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript + ' ';
+      } else {
+        interimTranscript += transcript;
+      }
+    }
+    
+    const maxLength = parseInt(textarea.getAttribute('maxlength'), 10);
+    const newText = (finalTranscript + interimTranscript).slice(0, maxLength);
+    
+    textarea.value = newText;
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  
+  recognition.onerror = function(event) {
+    console.error('Speech recognition error:', event.error);
+    isListening = false;
+    voiceBtn.classList.remove('is-listening');
+  };
+  
+  voiceBtn.addEventListener('click', function() {
+    if (isListening) {
+      recognition.stop();
+    } else {
+      finalTranscript = textarea.value ? textarea.value + ' ' : '';
+      try {
+        recognition.start();
+      } catch (e) {
+        console.error('Failed to start recognition:', e);
+      }
+    }
+  });
+}
+
+/* ── Clearing Interactions (Zoom & Mobile Touch) ───── */
+function initClearingInteractions() {
+  const clearingStage = document.querySelector('.clearing-stage');
+  const svg = document.getElementById('clearing-svg');
+  
+  if (!clearingStage || !svg) return;
+  
+  const VIEWBOX_HALF_SIZE = 250; /* Half of 500x500 viewBox */
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 3;
+  
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isPanning = false;
+  let startX = 0;
+  let startY = 0;
+  let startTranslateX = 0;
+  let startTranslateY = 0;
+  let lastTouchDistance = 0;
+  
+  function updateTransform() {
+    svg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+  }
+  
+  function constrainTranslation() {
+    const maxTranslate = (scale - 1) * VIEWBOX_HALF_SIZE;
+    translateX = Math.max(-maxTranslate, Math.min(maxTranslate, translateX));
+    translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+  }
+  
+  /* Desktop: Mouse wheel zoom */
+  clearingStage.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
+    
+    if (newScale === MIN_SCALE) {
+      scale = MIN_SCALE;
+      translateX = 0;
+      translateY = 0;
+    } else {
+      scale = newScale;
+      constrainTranslation();
+    }
+    
+    updateTransform();
+  }, { passive: false });
+  
+  /* Desktop: Click and drag to pan when zoomed */
+  clearingStage.addEventListener('mousedown', function(e) {
+    if (scale <= MIN_SCALE) return;
+    isPanning = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startTranslateX = translateX;
+    startTranslateY = translateY;
+    clearingStage.classList.add('is-zooming');
+  });
+  
+  document.addEventListener('mousemove', function(e) {
+    if (!isPanning) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    translateX = startTranslateX + dx / scale;
+    translateY = startTranslateY + dy / scale;
+    constrainTranslation();
+    updateTransform();
+  });
+  
+  document.addEventListener('mouseup', function() {
+    if (isPanning) {
+      isPanning = false;
+      clearingStage.classList.remove('is-zooming');
+    }
+  });
+  
+  /* Mobile: Pinch to zoom */
+  clearingStage.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      lastTouchDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+    } else if (e.touches.length === 1 && scale > MIN_SCALE) {
+      isPanning = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startTranslateX = translateX;
+      startTranslateY = translateY;
+    }
+  }, { passive: false });
+  
+  clearingStage.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+      
+      if (lastTouchDistance > 0) {
+        const delta = distance / lastTouchDistance;
+        const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
+        
+        if (newScale === MIN_SCALE) {
+          scale = MIN_SCALE;
+          translateX = 0;
+          translateY = 0;
+        } else {
+          scale = newScale;
+          constrainTranslation();
+        }
+        
+        updateTransform();
+      }
+      
+      lastTouchDistance = distance;
+    } else if (isPanning && e.touches.length === 1) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      translateX = startTranslateX + dx / scale;
+      translateY = startTranslateY + dy / scale;
+      constrainTranslation();
+      updateTransform();
+    }
+  }, { passive: false });
+  
+  clearingStage.addEventListener('touchend', function(e) {
+    if (e.touches.length === 0) {
+      isPanning = false;
+      lastTouchDistance = 0;
+    } else if (e.touches.length === 1) {
+      lastTouchDistance = 0;
+    }
+  });
+  
+  /* Mobile: Tap stone to show label */
+  svg.addEventListener('click', function(e) {
+    /* Only on touch devices */
+    if (!('ontouchstart' in window)) return;
+    
+    const target = e.target;
+    const stoneGroup = target.closest('[data-stone-label]');
+    
+    if (stoneGroup) {
+      e.stopPropagation();
+      const label = stoneGroup.getAttribute('data-stone-label');
+      showStoneTapLabel(stoneGroup, label);
+    }
+  });
+}
+
+function showStoneTapLabel(stoneElement, label) {
+  /* Remove any existing tap labels */
+  const existing = document.querySelectorAll('.stone-tap-label');
+  existing.forEach(el => el.remove());
+  
+  const rect = stoneElement.getBoundingClientRect();
+  const labelEl = document.createElement('div');
+  labelEl.className = 'stone-tap-label';
+  labelEl.textContent = label;
+  labelEl.style.position = 'fixed';
+  labelEl.style.left = rect.left + rect.width / 2 + 'px';
+  labelEl.style.top = rect.top + 'px';
+  
+  document.body.appendChild(labelEl);
+  
+  /* Auto-remove after 2 seconds */
+  setTimeout(function() {
+    labelEl.remove();
+  }, 2000);
 }
 
 function init() {
@@ -910,6 +1232,21 @@ function init() {
   
   /* Timeline navigation */
   initTimeline();
+  
+  /* Skip vignette checkbox */
+  const skipCheckbox = document.getElementById('skip-vignette-checkbox');
+  if (skipCheckbox) {
+    skipCheckbox.checked = localStorage.getItem(SKIP_VIGNETTE_KEY) === 'true';
+    skipCheckbox.addEventListener('change', function() {
+      localStorage.setItem(SKIP_VIGNETTE_KEY, this.checked ? 'true' : 'false');
+    });
+  }
+  
+  /* Voice input for textarea */
+  initVoiceInput();
+  
+  /* Clearing zoom and mobile interactions */
+  initClearingInteractions();
 }
 
 /* ── Bootstrap ──────────────────────────────────────── */
