@@ -15,23 +15,23 @@ const TONES = [
   /* Squares - Mixed */
   { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' },
   { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6b9c7a' },
-  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#cc5522' },
+  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#d97f3a' }, /* changed from #cc5522 - more distinct orange */
   { id: 'content',        label: 'Content',        shape: 'square',   color: '#8fb88a' },
   /* Diamonds - Mixed */
   { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#5575a8' },
-  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#87bcb5' },
+  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#6dd4c5' }, /* changed from #87bcb5 - more turquoise */
   { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#6b6b6b' },
-  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#a5c9b3' },
+  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#98d4b3' }, /* changed from #a5c9b3 - more saturated green-teal */
   /* Triangles - Mixed */
   { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#c9851a' },
   { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#f0a650' },
   { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#d4621a' },
-  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#a0c9af' },
+  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#a0d9af' }, /* changed from #a0c9af - brighter green */
   /* Stars - Mixed */
   { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#1e7a62' },
   { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#f5c76d' },
   { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#b84d9a' },
-  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#d4a5c9' },
+  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#e5a5d9' }, /* changed from #d4a5c9 - more pink */
   /* Hexagons - Mixed */
   { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#6b2d8a' },
   { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#8a9fc9' },
@@ -850,14 +850,12 @@ function animateLandingStory() {
   const enterButton   = document.getElementById('btn-enter');
   const spotlight     = document.getElementById('story-spotlight');
   const spotlightText = document.getElementById('story-spotlight-text');
-  const qualities     = document.querySelector('.landing-qualities');
 
   if (storyElements.length === 0) return;
 
   /* Respect reduced-motion preference — reveal everything immediately */
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     storyElements.forEach(function(el) { el.style.opacity = '1'; });
-    if (qualities) { qualities.style.opacity = '1'; }
     if (enterButton) {
       enterButton.style.opacity = '1';
       enterButton.style.transition = 'none';
@@ -866,39 +864,42 @@ function animateLandingStory() {
   }
 
   const FADE_MS    = 1200;  /* spotlight fade-in / fade-out duration (ms)  */
-  const HOLD_MS    = 2200;  /* time each section is fully visible (ms)      */
+  const HOLD_MS    = 2600;  /* time each section is fully visible (ms) — increased for slower readers */
+  const HOLD_MS_LONG = 3400; /* extended hold for longer paragraphs (2, 4) */
   const GAP_MS     = 400;   /* pause between sections before next starts   */
-  const SECTION_MS = FADE_MS + HOLD_MS + FADE_MS + GAP_MS; /* ≈ 5000 ms   */
   const INITIAL_MS = 1000;  /* delay before the first section appears      */
 
   /* Phase 1 — flash each section one at a time through the spotlight */
+  let cumulativeDelay = INITIAL_MS;
+  
   storyElements.forEach(function(el, index) {
-    const sectionStart = INITIAL_MS + (index * SECTION_MS);
+    const isLongerParagraph = (index === 1 || index === 3); /* paragraphs 2 and 4 */
+    const holdDuration = isLongerParagraph ? HOLD_MS_LONG : HOLD_MS;
+    const sectionDuration = FADE_MS + holdDuration + FADE_MS + GAP_MS;
 
     /* Fade spotlight in with this section's text */
     setTimeout(function() {
       spotlightText.innerHTML = el.innerHTML;
       spotlight.setAttribute('aria-hidden', 'false');
       spotlight.style.opacity = '1';
-    }, sectionStart);
+    }, cumulativeDelay);
 
     /* Fade spotlight out after the hold period */
     setTimeout(function() {
       spotlight.style.opacity = '0';
       spotlight.setAttribute('aria-hidden', 'true');
-    }, sectionStart + FADE_MS + HOLD_MS);
+    }, cumulativeDelay + FADE_MS + holdDuration);
+
+    cumulativeDelay += sectionDuration;
   });
 
   /* Phase 2 — reveal the full story block once all sections have flashed */
-  const revealStart = INITIAL_MS + (storyElements.length * SECTION_MS) + 600;
+  const revealStart = cumulativeDelay + 600;
 
   setTimeout(function() {
     storyElements.forEach(function(el) {
       el.style.opacity = '1';
     });
-    if (qualities) {
-      qualities.style.opacity = '1';
-    }
   }, revealStart);
 
   /* Phase 3 — show the enter button after the story block has settled */
