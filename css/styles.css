@@ -699,7 +699,7 @@ h2 {
   max-width: 480px;
   align-self: center;
   position: relative;
-  touch-action: none; /* Enable custom touch handling for zoom/pan */
+  touch-action: pan-x pan-y; /* Allow native zoom while handling custom pan */
   cursor: grab;
 }
 

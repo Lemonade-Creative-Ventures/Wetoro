@@ -983,7 +983,6 @@ function initVoiceInput() {
       }
     }
     
-    const currentValue = textarea.value;
     const maxLength = parseInt(textarea.getAttribute('maxlength'), 10);
     const newText = (finalTranscript + interimTranscript).slice(0, maxLength);
     
@@ -1018,6 +1017,10 @@ function initClearingInteractions() {
   
   if (!clearingStage || !svg) return;
   
+  const VIEWBOX_HALF_SIZE = 250; /* Half of 500x500 viewBox */
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 3;
+  
   let scale = 1;
   let translateX = 0;
   let translateY = 0;
@@ -1033,7 +1036,7 @@ function initClearingInteractions() {
   }
   
   function constrainTranslation() {
-    const maxTranslate = (scale - 1) * 250; /* Half of viewBox size */
+    const maxTranslate = (scale - 1) * VIEWBOX_HALF_SIZE;
     translateX = Math.max(-maxTranslate, Math.min(maxTranslate, translateX));
     translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
   }
@@ -1042,10 +1045,10 @@ function initClearingInteractions() {
   clearingStage.addEventListener('wheel', function(e) {
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(1, Math.min(3, scale * delta));
+    const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
     
-    if (newScale === 1) {
-      scale = 1;
+    if (newScale === MIN_SCALE) {
+      scale = MIN_SCALE;
       translateX = 0;
       translateY = 0;
     } else {
@@ -1058,7 +1061,7 @@ function initClearingInteractions() {
   
   /* Desktop: Click and drag to pan when zoomed */
   clearingStage.addEventListener('mousedown', function(e) {
-    if (scale <= 1) return;
+    if (scale <= MIN_SCALE) return;
     isPanning = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -1094,7 +1097,7 @@ function initClearingInteractions() {
         touch2.clientX - touch1.clientX,
         touch2.clientY - touch1.clientY
       );
-    } else if (e.touches.length === 1 && scale > 1) {
+    } else if (e.touches.length === 1 && scale > MIN_SCALE) {
       isPanning = true;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -1115,10 +1118,10 @@ function initClearingInteractions() {
       
       if (lastTouchDistance > 0) {
         const delta = distance / lastTouchDistance;
-        const newScale = Math.max(1, Math.min(3, scale * delta));
+        const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * delta));
         
-        if (newScale === 1) {
-          scale = 1;
+        if (newScale === MIN_SCALE) {
+          scale = MIN_SCALE;
           translateX = 0;
           translateY = 0;
         } else {
