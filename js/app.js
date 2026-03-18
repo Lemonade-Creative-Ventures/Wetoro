@@ -7,36 +7,36 @@
 /* ── Constants ─────────────────────────────────────── */
 
 const TONES = [
-  /* Circles - Mixed */
-  { id: 'grief',          label: 'Grief',          shape: 'circle',   color: '#3a5a8c' },
-  { id: 'happy',          label: 'Happy',          shape: 'circle',   color: '#e8b84d' },
-  { id: 'worry',          label: 'Worry',          shape: 'circle',   color: '#b8973a' },
-  { id: 'hopeful',        label: 'Hopeful',        shape: 'circle',   color: '#7ab88f' },
-  /* Squares - Mixed */
-  { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' },
-  { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6b9c7a' },
-  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#d97f3a' }, /* changed from #cc5522 - more distinct orange */
-  { id: 'content',        label: 'Content',        shape: 'square',   color: '#8fb88a' },
-  /* Diamonds - Mixed */
-  { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#5575a8' },
-  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#6dd4c5' }, /* changed from #87bcb5 - more turquoise */
-  { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#6b6b6b' },
-  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#98d4b3' }, /* changed from #a5c9b3 - more saturated green-teal */
-  /* Triangles - Mixed */
-  { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#c9851a' },
-  { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#f0a650' },
-  { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#d4621a' },
-  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#a0d9af' }, /* changed from #a0c9af - brighter green */
-  /* Stars - Mixed */
-  { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#1e7a62' },
-  { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#f5c76d' },
-  { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#b84d9a' },
-  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#e5a5d9' }, /* changed from #d4a5c9 - more pink */
-  /* Hexagons - Mixed */
-  { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#6b2d8a' },
-  { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#8a9fc9' },
-  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#1e3a60' },
-  { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#c9a8d4' },
+  /* Circles - 4 distinct colors cycle */
+  { id: 'grief',          label: 'Grief',          shape: 'circle',   color: '#4a7ac9' }, /* blue */
+  { id: 'happy',          label: 'Happy',          shape: 'circle',   color: '#e8b84d' }, /* gold */
+  { id: 'worry',          label: 'Worry',          shape: 'circle',   color: '#6dd4a5' }, /* green */
+  { id: 'hopeful',        label: 'Hopeful',        shape: 'circle',   color: '#d97f9a' }, /* pink */
+  /* Squares - same 4 colors */
+  { id: 'anger',          label: 'Anger',          shape: 'square',   color: '#c0392b' }, /* red (special) */
+  { id: 'grateful',       label: 'Grateful',       shape: 'square',   color: '#6dd4a5' }, /* green */
+  { id: 'frustration',    label: 'Frustration',    shape: 'square',   color: '#d97f9a' }, /* pink */
+  { id: 'content',        label: 'Content',        shape: 'square',   color: '#4a7ac9' }, /* blue */
+  /* Diamonds - same 4 colors */
+  { id: 'sadness',        label: 'Sadness',        shape: 'diamond',  color: '#4a7ac9' }, /* blue */
+  { id: 'peaceful',       label: 'Peaceful',       shape: 'diamond',  color: '#6dd4a5' }, /* green */
+  { id: 'exhaustion',     label: 'Exhaustion',     shape: 'diamond',  color: '#7a7a7a' }, /* gray (special) */
+  { id: 'relieved',       label: 'Relieved',       shape: 'diamond',  color: '#e8b84d' }, /* gold */
+  /* Triangles - same 4 colors */
+  { id: 'anxiety',        label: 'Anxiety',        shape: 'triangle', color: '#d97f9a' }, /* pink */
+  { id: 'excited',        label: 'Excited',        shape: 'triangle', color: '#e8b84d' }, /* gold */
+  { id: 'overwhelm',      label: 'Overwhelm',      shape: 'triangle', color: '#c0392b' }, /* red (special) */
+  { id: 'calm',           label: 'Calm',           shape: 'triangle', color: '#6dd4a5' }, /* green */
+  /* Stars - same 4 colors */
+  { id: 'loneliness',     label: 'Loneliness',     shape: 'star',     color: '#4a7ac9' }, /* blue */
+  { id: 'joyful',         label: 'Joyful',         shape: 'star',     color: '#e8b84d' }, /* gold */
+  { id: 'heartache',      label: 'Heartache',      shape: 'star',     color: '#d97f9a' }, /* pink */
+  { id: 'loved',          label: 'Loved',          shape: 'star',     color: '#6dd4a5' }, /* green */
+  /* Hexagons - same 4 colors */
+  { id: 'fear',           label: 'Fear',           shape: 'hexagon',  color: '#7a7a7a' }, /* gray (special) */
+  { id: 'proud',          label: 'Proud',          shape: 'hexagon',  color: '#4a7ac9' }, /* blue */
+  { id: 'loss',           label: 'Loss',           shape: 'hexagon',  color: '#4a7ac9' }, /* blue */
+  { id: 'inspired',       label: 'Inspired',       shape: 'hexagon',  color: '#e8b84d' }, /* gold */
 ];
 
 const STORAGE_KEY = 'wetoro-release';
@@ -865,7 +865,8 @@ function animateLandingStory() {
 
   const FADE_MS    = 1200;  /* spotlight fade-in / fade-out duration (ms)  */
   const HOLD_MS    = 2600;  /* time shorter sections are fully visible (ms) */
-  const HOLD_MS_LONG = 3400; /* extended hold for longer paragraphs (2, 4) */
+  const HOLD_MS_PARA2 = 4200; /* extended hold for paragraph 2 (longest) */
+  const HOLD_MS_PARA4 = 3400; /* extended hold for paragraph 4 */
   const GAP_MS     = 400;   /* pause between sections before next starts   */
   const INITIAL_MS = 1000;  /* delay before the first section appears      */
 
@@ -873,8 +874,10 @@ function animateLandingStory() {
   let cumulativeDelay = INITIAL_MS;
   
   storyElements.forEach(function(el, index) {
-    const isLongerParagraph = (index === 1 || index === 3); /* paragraphs 2 and 4 */
-    const holdDuration = isLongerParagraph ? HOLD_MS_LONG : HOLD_MS;
+    /* Different hold durations for different paragraph lengths */
+    let holdDuration = HOLD_MS;
+    if (index === 1) holdDuration = HOLD_MS_PARA2; /* paragraph 2 - longest */
+    else if (index === 3) holdDuration = HOLD_MS_PARA4; /* paragraph 4 - long */
     const sectionDuration = FADE_MS + holdDuration + FADE_MS + GAP_MS;
 
     /* Fade spotlight in with this section's text */
