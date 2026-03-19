@@ -27,13 +27,17 @@ Wetoro is inspired by the Japanese tradition of Toro Nagashi, where lanterns are
 
 To enable the collective release feature where all users see each other's stones:
 
-1. Follow the complete setup guide in [`DEPLOYMENT.md`](DEPLOYMENT.md)
-2. Set up a Supabase database (free tier)
-3. Deploy the API from the [`api`](api/) folder
-4. Update `API_URL` in `js/app.js` with your deployed API URL
-5. Deploy the frontend to Netlify, Vercel, or GitHub Pages
+**📚 For Non-Coders**: Check out the [`SETUP`](SETUP/) folder for beginner-friendly, step-by-step guides!
+- [Start Here: Overview & Prerequisites](SETUP/01-OVERVIEW.md)
+- [Getting Your API Keys](SETUP/02-GETTING-KEYS.md)
+- [Setting Up the Database](SETUP/03-DATABASE-SETUP.md)
+- [Deploying Your API Server](SETUP/04-API-DEPLOYMENT.md)
+- [Connecting Everything](SETUP/05-CONNECTING.md)
+- [Deploying Your Website](SETUP/06-WEBSITE-DEPLOYMENT.md)
+- [Testing Everything](SETUP/07-TESTING.md)
+- [Troubleshooting](SETUP/08-TROUBLESHOOTING.md)
 
-**See [`DEPLOYMENT.md`](DEPLOYMENT.md) for detailed step-by-step instructions.**
+**For Developers**: See [`DEPLOYMENT.md`](DEPLOYMENT.md) for technical deployment instructions.
 
 ## Architecture
 
