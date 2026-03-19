@@ -114,6 +114,13 @@ These are valuable skills you can use for other projects too!
 
 Once you've completed the setup, use these for quick reference:
 
+- **[Setup Complete - Quick Reference Guide](./QUICK-REFERENCE.md)** 📌
+  - Save your important URLs and credentials
+  - Common tasks (updating website, checking traffic, etc.)
+  - Quick fixes for common issues
+  - Maintenance schedule
+
+**Important Dashboards:**
 - **Your Supabase Dashboard**: https://supabase.com/dashboard
 - **Your Vercel Dashboard**: https://vercel.com/dashboard
 - **Your Netlify Dashboard**: https://app.netlify.com
