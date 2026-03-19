@@ -11,7 +11,7 @@
  * Replace with your deployed API URL (e.g., https://your-api.vercel.app)
  * Leave empty to use local storage only (original behavior)
  */
-const API_URL = 'wetoro-bhqclojum-jjm578-3607s-projects.vercel.app';  /* Set to your API URL after deployment */
+const API_URL = 'https://wetoro-bhqclojum-jjm578-3607s-projects.vercel.app';  /* Set to your API URL after deployment */
 const USE_API = API_URL && API_URL.length > 0;
 
 /* ── Constants ─────────────────────────────────────── */
