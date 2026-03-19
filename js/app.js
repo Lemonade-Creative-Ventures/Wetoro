@@ -10,8 +10,16 @@
  * IMPORTANT: After deploying your API, update this URL 
  * Replace with your deployed API URL (e.g., https://your-api.vercel.app)
  * Leave empty to use local storage only (original behavior)
+ * 
+ * INSTRUCTIONS:
+ * 1. Deploy your API to Vercel (see DEPLOYMENT.md)
+ * 2. Copy your API URL from Vercel dashboard
+ * 3. Replace the empty string below with your URL
+ * 4. Example: const API_URL = 'https://wetoro-api.vercel.app';
+ * 
+ * NOTE: An incorrect or unreachable URL will cause stones to not appear!
  */
-const API_URL = 'https://wetoro-bhqclojum-jjm578-3607s-projects.vercel.app';  /* Set to your API URL after deployment */
+const API_URL = '';  /* Set to your API URL after deployment */
 const USE_API = API_URL && API_URL.length > 0;
 
 /* ── Constants ─────────────────────────────────────── */
