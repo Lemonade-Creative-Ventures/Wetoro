@@ -701,8 +701,13 @@ async function renderClearing(userJustReleased) {
     };
     const stoneLabel = stone.label || '';
     
-    /* Check if this is the user's stone */
-    const isUserStone = stone.isUser || (userStoneId && stone.tone_id === userStoneId && index === allStones.length - 1);
+    /* Check if this is the user's stone by comparing tone data and label */
+    const isUserStone = stone.isUser || (
+      userStoneId && 
+      stone.tone_id === userStoneId && 
+      saved && 
+      stone.label === (saved.label || '')
+    );
     
     /* Generate consistent position based on index */
     const pos = randomPositionInCircle(rng, cx, cy, 25, clearingR - 22);
@@ -1006,8 +1011,12 @@ async function renderClearingForDate(dateStr) {
     return;
   }
   
-  /* Render stones */
-  const rng = createRng(parseInt(dateStr.replace(/-/g, '')));
+  /* Render stones with consistent seed based on date */
+  /* Use a simple hash of the date string to avoid overflow */
+  const dateHash = dateStr.split('').reduce((acc, char) => {
+    return ((acc << 5) - acc) + char.charCodeAt(0);
+  }, 0);
+  const rng = createRng(Math.abs(dateHash));
   
   stones.forEach(function(stone) {
     const tone = {
