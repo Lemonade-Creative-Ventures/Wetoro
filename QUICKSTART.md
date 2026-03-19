@@ -207,6 +207,8 @@ Choose ONE of these options:
 - Check the browser console (press F12) for errors
 - Go to Supabase → Table Editor → stones to see if they're being saved
 - Make sure you redeployed your Vercel project after adding environment variables
+- **Note:** If you see your own stone but not others, this is normal if you're the only user who has released a stone today
+- **Timezone Issue (Fixed):** If you updated from an older version, make sure to redeploy both your frontend (Netlify/GitHub Pages) and backend (Vercel) to get the timezone fix
 
 ### Still Having Issues?
 1. Check the detailed guide in `DEPLOYMENT.md`
