@@ -4,6 +4,16 @@
 
 'use strict';
 
+/* ── API Configuration ──────────────────────────────── */
+
+/* 
+ * IMPORTANT: After deploying your API, update this URL 
+ * Replace with your deployed API URL (e.g., https://your-api.vercel.app)
+ * Leave empty to use local storage only (original behavior)
+ */
+const API_URL = '';  /* Set to your API URL after deployment */
+const USE_API = API_URL && API_URL.length > 0;
+
 /* ── Constants ─────────────────────────────────────── */
 
 const TONES = [
@@ -100,6 +110,110 @@ function saveRelease(tone, label) {
     }));
   } catch (_) { /* ignore storage errors */ }
 }
+
+/* ── API Helpers ────────────────────────────────────── */
+
+/**
+ * Save a stone to the backend API
+ */
+async function saveStoneToAPI(tone, label) {
+  if (!USE_API) return { success: true };
+  
+  try {
+    const response = await fetch(`${API_URL}/api/stones`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tone: {
+          id: tone.id,
+          label: tone.label,
+          shape: tone.shape,
+          color: tone.color
+        },
+        label: label || ''
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to save stone to API:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Fetch all stones for today from the API
+ */
+async function fetchTodayStones() {
+  if (!USE_API) return [];
+  
+  try {
+    const response = await fetch(`${API_URL}/api/stones/today`);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.stones || [];
+  } catch (error) {
+    console.error('Failed to fetch stones from API:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch stones for a specific date from the API
+ */
+async function fetchStonesForDate(dateStr) {
+  if (!USE_API) return [];
+  
+  try {
+    const response = await fetch(`${API_URL}/api/stones/${dateStr}`);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.stones || [];
+  } catch (error) {
+    console.error('Failed to fetch stones from API:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch available dates from the API
+ */
+async function fetchAvailableDates() {
+  if (!USE_API) {
+    /* Fallback to local storage */
+    const saved = getSavedRelease();
+    return saved ? [todayString()] : [];
+  }
+  
+  try {
+    const response = await fetch(`${API_URL}/api/dates`);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.dates || [];
+  } catch (error) {
+    console.error('Failed to fetch dates from API:', error);
+    return [];
+  }
+}
+
 
 /* ── Seeded RNG ─────────────────────────────────────── */
 
@@ -392,13 +506,18 @@ function initRitual() {
 
 /* ── Release: Text Dissolve → Breathing ────────────── */
 
-function startRelease() {
+async function startRelease() {
   const textarea = document.getElementById('release-text');
   const text     = textarea ? textarea.value.trim() : '';
 
-  /* Save to localStorage before text is lost */
+  /* Save to localStorage and API before text is lost */
   if (state.selectedTone) {
     saveRelease(state.selectedTone, state.stoneLabel);
+    
+    /* Also save to API if enabled */
+    if (USE_API) {
+      await saveStoneToAPI(state.selectedTone, state.stoneLabel);
+    }
   }
 
   /* Seed the dissolving text onto the breathing screen */
@@ -500,7 +619,7 @@ function randomPositionInCircle(rng, cx, cy, minR, maxR) {
   };
 }
 
-function renderClearing(userJustReleased) {
+async function renderClearing(userJustReleased) {
   const svg = document.getElementById('clearing-svg');
   if (!svg) return;
 
@@ -540,65 +659,105 @@ function renderClearing(userJustReleased) {
     svg.appendChild(ring);
   });
 
-  /* ── Only show actual user stone (no fake stones) ── */
+  /* ── Fetch stones from API or use local storage ── */
+  let allStones = [];
+  
+  if (USE_API) {
+    /* Fetch all stones from API */
+    allStones = await fetchTodayStones();
+  } else {
+    /* Fallback: use only local stone */
+    const saved = getSavedRelease();
+    if (saved && saved.tone) {
+      allStones = [{
+        tone_id: saved.tone.id,
+        tone_label: saved.tone.label,
+        tone_shape: saved.tone.shape,
+        tone_color: saved.tone.color,
+        label: saved.label || '',
+        isUser: true
+      }];
+    }
+  }
+  
+  const totalCount = allStones.length;
+  
+  /* ── Determine which stone is the user's ── */
   const saved = getSavedRelease();
-  let totalCount = 0;
-
+  let userStoneId = null;
   if (saved && saved.tone) {
-    totalCount = 1;
-    const userTone = saved.tone;
-    const userLabel = saved.label || '';
+    userStoneId = saved.tone.id;
+  }
 
-    /* Glow halo (appears/pulses via CSS animation) */
-    const haloRadius = 10;
-    const userPos    = randomPositionInCircle(
-      createRng(dateSeed() + 9999), cx, cy, 25, clearingR - 22
-    );
-
-    const halo = document.createElementNS(SVG_NS, 'circle');
-    halo.setAttribute('cx',      userPos.x);
-    halo.setAttribute('cy',      userPos.y);
-    halo.setAttribute('r',       haloRadius);
-    halo.setAttribute('fill',    userTone.color);
-    halo.setAttribute('opacity', '0.15');
-    halo.classList.add('stone-glow--new');
-    svg.appendChild(halo);
-
-    /* The stone itself */
-    const userStone = makeStoneEl(
-      userTone.shape, userPos.x, userPos.y, 6.5, userTone.color, 0.88, 0
-    );
-    if (userJustReleased) {
-      userStone.classList.add('stone--new');
+  /* ── Render all stones ── */
+  const rng = createRng(dateSeed());
+  
+  allStones.forEach(function(stone, index) {
+    const tone = {
+      id: stone.tone_id,
+      label: stone.tone_label,
+      shape: stone.tone_shape,
+      color: stone.tone_color
+    };
+    const stoneLabel = stone.label || '';
+    
+    /* Check if this is the user's stone */
+    const isUserStone = stone.isUser || (userStoneId && stone.tone_id === userStoneId && index === allStones.length - 1);
+    
+    /* Generate consistent position based on index */
+    const pos = randomPositionInCircle(rng, cx, cy, 25, clearingR - 22);
+    
+    /* Add glow for user's stone */
+    if (isUserStone) {
+      const halo = document.createElementNS(SVG_NS, 'circle');
+      halo.setAttribute('cx', pos.x);
+      halo.setAttribute('cy', pos.y);
+      halo.setAttribute('r', 10);
+      halo.setAttribute('fill', tone.color);
+      halo.setAttribute('opacity', '0.15');
+      halo.classList.add('stone-glow--new');
+      svg.appendChild(halo);
     }
     
-    /* Add hover functionality and mobile tap label if there's a label */
-    if (userLabel) {
-      userStone.setAttribute('data-label', userLabel);
-      userStone.setAttribute('data-stone-label', userLabel);
-      userStone.style.cursor = 'pointer';
-      userStone.addEventListener('mouseenter', function(e) {
-        showTooltip(e, userLabel);
+    /* Create the stone */
+    const stoneEl = makeStoneEl(
+      tone.shape, pos.x, pos.y, 6.5, tone.color, 0.88, 0
+    );
+    
+    /* Add animation for newly released user stone */
+    if (isUserStone && userJustReleased) {
+      stoneEl.classList.add('stone--new');
+    }
+    
+    /* Add hover/tap functionality for labels */
+    if (stoneLabel) {
+      stoneEl.setAttribute('data-label', stoneLabel);
+      stoneEl.setAttribute('data-stone-label', stoneLabel);
+      stoneEl.style.cursor = 'pointer';
+      stoneEl.addEventListener('mouseenter', function(e) {
+        showTooltip(e, stoneLabel);
       });
-      userStone.addEventListener('mouseleave', hideTooltip);
+      stoneEl.addEventListener('mouseleave', hideTooltip);
     } else {
-      /* Even without custom label, add tone name for mobile tap */
-      const toneName = userTone.label || '';
+      /* Add tone name for stones without custom label */
+      const toneName = tone.label || '';
       if (toneName) {
-        userStone.setAttribute('data-stone-label', toneName);
+        stoneEl.setAttribute('data-stone-label', toneName);
       }
     }
     
-    svg.appendChild(userStone);
-
-    /* Update "your stone" row */
-    const yourStoneRow  = document.getElementById('your-stone-row');
-    const yourStoneIcon = document.getElementById('your-stone-icon');
-    if (yourStoneRow && yourStoneIcon) {
-      yourStoneIcon.innerHTML = stoneIconHtml(userTone.shape, userTone.color, 18);
-      yourStoneRow.style.display = 'flex';
+    svg.appendChild(stoneEl);
+    
+    /* Update "your stone" indicator */
+    if (isUserStone) {
+      const yourStoneRow  = document.getElementById('your-stone-row');
+      const yourStoneIcon = document.getElementById('your-stone-icon');
+      if (yourStoneRow && yourStoneIcon) {
+        yourStoneIcon.innerHTML = stoneIconHtml(tone.shape, tone.color, 18);
+        yourStoneRow.style.display = 'flex';
+      }
     }
-  }
+  });
 
   /* ── Count line ── */
   const countEl = document.getElementById('clearing-count');
@@ -617,7 +776,8 @@ function renderClearing(userJustReleased) {
   /* ── Show timeline navigation only if there are past releases ── */
   const timelineNav = document.getElementById('timeline-nav');
   if (timelineNav) {
-    const hasPastReleases = getStoredReleaseDates().length > 1;
+    const dates = await fetchAvailableDates();
+    const hasPastReleases = dates.length > 1;
     if (hasPastReleases) {
       timelineNav.style.display = 'flex';
     } else {
@@ -738,14 +898,14 @@ function initTimeline() {
   });
 }
 
-function renderTimelineDates() {
+async function renderTimelineDates() {
   const picker = document.getElementById('timeline-picker');
   if (!picker) return;
   
   picker.innerHTML = '';
   
   /* Get dates that actually have releases stored */
-  const storedDates = getStoredReleaseDates();
+  const storedDates = await fetchAvailableDates();
   
   if (storedDates.length === 0) {
     const msg = document.createElement('p');
@@ -779,7 +939,8 @@ function renderTimelineDates() {
 }
 
 function getStoredReleaseDates() {
-  /* Get all dates with stored releases from localStorage */
+  /* Deprecated - use fetchAvailableDates() instead */
+  /* Keeping for backwards compatibility */
   const dates = [];
   const today = todayString();
   
@@ -793,42 +954,98 @@ function getStoredReleaseDates() {
   return dates;
 }
 
-function renderClearingForDate(dateStr) {
-  /* This would load clearing data for the specified date */
-  /* For now, only today's data is available in localStorage */
-  if (dateStr === todayString()) {
-    renderClearing(false);
-  } else {
-    /* Show empty clearing for past dates (no data stored) */
-    const svg = document.getElementById('clearing-svg');
-    if (!svg) return;
-    
-    /* Clear and show ground only */
-    Array.from(svg.childNodes).forEach(function (node) {
-      if (node.nodeName !== 'defs') svg.removeChild(node);
-    });
-    
-    const cx = 250, cy = 250;
-    const clearingR = 218;
-    
-    function addCircle(r, fill, opacity) {
-      const el = document.createElementNS(SVG_NS, 'circle');
-      el.setAttribute('cx', cx);
-      el.setAttribute('cy', cy);
-      el.setAttribute('r', r);
-      el.setAttribute('fill', fill);
-      if (opacity !== undefined) el.setAttribute('opacity', opacity);
-      svg.appendChild(el);
-    }
-    
-    addCircle(248, '#0d1a09');
-    addCircle(clearingR, '#1a2b16');
-    addCircle(180, 'url(#groundGlow)');
-    
+async function renderClearingForDate(dateStr) {
+  const svg = document.getElementById('clearing-svg');
+  if (!svg) return;
+  
+  const cx = 250, cy = 250;
+  const clearingR = 218;
+  
+  /* Clear and show ground */
+  Array.from(svg.childNodes).forEach(function (node) {
+    if (node.nodeName !== 'defs') svg.removeChild(node);
+  });
+  
+  function addCircle(r, fill, opacity) {
+    const el = document.createElementNS(SVG_NS, 'circle');
+    el.setAttribute('cx', cx);
+    el.setAttribute('cy', cy);
+    el.setAttribute('r', r);
+    el.setAttribute('fill', fill);
+    if (opacity !== undefined) el.setAttribute('opacity', opacity);
+    svg.appendChild(el);
+  }
+  
+  addCircle(248, '#0d1a09');
+  addCircle(clearingR, '#1a2b16');
+  addCircle(180, 'url(#groundGlow)');
+  
+  /* Subtle depth rings */
+  [225, 180, 130, 80].forEach(function (r, i) {
+    const ring = document.createElementNS(SVG_NS, 'circle');
+    ring.setAttribute('cx', cx);
+    ring.setAttribute('cy', cy);
+    ring.setAttribute('r', r);
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', '#2e4828');
+    ring.setAttribute('stroke-width', '0.5');
+    ring.setAttribute('opacity', String(0.35 - i * 0.06));
+    svg.appendChild(ring);
+  });
+  
+  /* Fetch stones for the specified date */
+  const stones = await fetchStonesForDate(dateStr);
+  
+  if (stones.length === 0) {
     const countEl = document.getElementById('clearing-count');
     if (countEl) {
-      countEl.textContent = 'No data for this date';
+      countEl.textContent = dateStr === todayString() 
+        ? 'No stones placed yet today' 
+        : 'No stones for this date';
     }
+    return;
+  }
+  
+  /* Render stones */
+  const rng = createRng(parseInt(dateStr.replace(/-/g, '')));
+  
+  stones.forEach(function(stone) {
+    const tone = {
+      id: stone.tone_id,
+      label: stone.tone_label,
+      shape: stone.tone_shape,
+      color: stone.tone_color
+    };
+    const stoneLabel = stone.label || '';
+    
+    const pos = randomPositionInCircle(rng, cx, cy, 25, clearingR - 22);
+    
+    const stoneEl = makeStoneEl(
+      tone.shape, pos.x, pos.y, 6.5, tone.color, 0.88, 0
+    );
+    
+    if (stoneLabel) {
+      stoneEl.setAttribute('data-label', stoneLabel);
+      stoneEl.setAttribute('data-stone-label', stoneLabel);
+      stoneEl.style.cursor = 'pointer';
+      stoneEl.addEventListener('mouseenter', function(e) {
+        showTooltip(e, stoneLabel);
+      });
+      stoneEl.addEventListener('mouseleave', hideTooltip);
+    } else {
+      const toneName = tone.label || '';
+      if (toneName) {
+        stoneEl.setAttribute('data-stone-label', toneName);
+      }
+    }
+    
+    svg.appendChild(stoneEl);
+  });
+  
+  const countEl = document.getElementById('clearing-count');
+  if (countEl) {
+    const count = stones.length;
+    countEl.textContent = count === 1 ? '1 stone placed' : `${count} stones placed`;
   }
 }
 
