@@ -15,7 +15,7 @@
  * 1. Deploy your API to Vercel (see DEPLOYMENT.md)
  * 2. Copy your API URL from Vercel dashboard
  * 3. Replace the empty string below with your URL
- * 4. Example: const API_URL = 'https://wetoro-api.vercel.app';
+ * 4. Example: const API_URL = 'https://your-project-api.vercel.app';
  * 
  * NOTE: An incorrect or unreachable URL will cause stones to not appear!
  */
