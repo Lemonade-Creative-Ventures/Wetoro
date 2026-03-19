@@ -195,6 +195,8 @@ You should see:
   2. Click "Table Editor"
   3. Click on "stones" table
   4. You should see entries for each stone
+- **Note:** If you only see your own stone, this is normal if you're the only user. Other users' stones will appear as they release them on the same UTC date
+- **Important:** Both the client and server now use UTC timezone for date consistency. If you're updating from an older version, redeploy both frontend and backend
 
 ### Database connection errors
 - Verify your Supabase credentials are correct
